@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Getter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>WEATHER GETTER</h1>
+    <h2>Yeah I know, boring.</h2>
+
+    <form method="POST">
+        <input type="text" name="city" placeholder="Enter city name" required>
+        <div class="toggle-container">
+            <div class="toggle-group">
+                <label class="switch">
+                    <input type="checkbox" id="celsius-toggle" name="unit" value="Celsius" 
+                        {% if selected_unit == "Celsius" %} checked {% endif %}>
+                    <span class="slider round"></span>
+                </label>
+                <span class="toggle-label">Celsius</span>
+            </div>
+            <div class="toggle-group">
+                <label class="switch">
+                    <input type="checkbox" id="fahrenheit-toggle" name="unit" value="Fahrenheit" 
+                        {% if selected_unit == "Fahrenheit" %} checked {% endif %}>
+                    <span class="slider round"></span>
+                </label>
+                <span class="toggle-label">Fahrenheit</span>
+            </div>
+        </div>        
+        <button type="submit">Get Weather</button>
+    </form>    
+
+    <button id="dark-mode-toggle">Dark Mode</button>
+
+    {% if error_message %}
+    <div class="error">
+        <p>{{ error_message }}</p>
+    </div>
+    {% endif %}
+
+    {% if weather_data %}
+    <div class="weather-container">
+        <!-- Current Weather -->
+        <div class="current-weather">
+            <div class="weather">
+                <h2>{{ weather_data.location }}</h2>
+                <img src="{{ weather_data.icon_url }}" alt="Weather icon">
+                <p>{{ weather_data.description }}</p>
+                <p><strong>Temperature:</strong> {{ weather_data.temperature }}°{{ weather_data.unit }}</p>
+                <p><strong>Feels Like:</strong> {{ weather_data.feels_like }}°{{ weather_data.unit }}</p>
+                <p><strong>Wind:</strong> {{ weather_data.wind_speed }} km/h</p>
+                <p><strong>Humidity:</strong> {{ weather_data.humidity }}%</p>
+                <p><strong>Pressure:</strong> {{ weather_data.pressure }} hPa</p>
+                <p><strong>Visibility:</strong> {{ weather_data.visibility }} km</p>
+            </div>
+        </div>
+    
+        <!-- Forecast Weather -->
+        <div class="forecast">
+            <div class="forecast-cards">
+                {% for day in forecast_data.daily %}
+                <div class="forecast-card">
+                    <h3>{{ day.date }}</h3>
+                    <img src="{{ day.icon_url }}" alt="Forecast icon">
+                    <p>{{ day.condition }}</p>
+                    <p><strong>High:</strong> {{ day.max_temp }}°{{ weather_data.unit }}</p>
+                    <p><strong>Low:</strong> {{ day.min_temp }}°{{ weather_data.unit }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    {% endif %}
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
